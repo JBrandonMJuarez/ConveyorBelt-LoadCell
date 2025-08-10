@@ -1,13 +1,10 @@
 /*
-  Conversión del sketch Arduino -> PIC18F4550 (XC8)
-  - LCD I2C (PCF8574) en RB0(SDA)/RB1(SCL) originalmente; aquí usamos MSSP hardware I2C (master)
+  - LCD I2C (PCF8574)
   - HX711: DOUT=RD0, CLK=RD1
-  - Servo: señal en RD2 (por temporización)
+  - Servo: seÃ±al en RD2 (por temporizaciÃ³n)
   - Motor PWM: CCP1 RC2
   - Botones: RB4(sensor), RB5(start), RB6(stop), RB7(calibrar)
   - EEPROM interna para guardar 'escala'
-  - Mantiene la lógica original (Calibrar, Pesa, Arranque...)
-  - NO usa UART, NO usa RTC, NO usa ADC aparte de HX711
 */
 
 #define _XTAL_FREQ 20000000UL
@@ -28,11 +25,11 @@
 // ---------- Definiciones hardware ----------
 /* I2C (PCF8574) usando MSSP hardware (SDA=RC4, SCL=RC3 en PIC18F4550 hardware) */
 #define I2C_HW               1
-#define PCF8574_ADDR         0x40  // 7-bit address (común para muchos módulos LCD)
+#define PCF8574_ADDR         0x40  // 7-bit address (comÃºn para muchos mÃ³dulos LCD)
 
-// NOTA: en el código original las macros I2C_SDA_PIN etc estaban apuntando a RB0/RB1.
-// Al usar MSSP hardware, el hardware usa RC3/RC4. No modifiqué el resto del programa
-// salvo las funciones i2c_* — el resto del código mantiene sus macros originales.
+// NOTA: en el cÃ³digo original las macros I2C_SDA_PIN etc estaban apuntando a RB0/RB1.
+// Al usar MSSP hardware, el hardware usa RC3/RC4. No modifiquÃ© el resto del programa
+// salvo las funciones i2c_* â€” el resto del cÃ³digo mantiene sus macros originales.
 
 /* HX711 pins */
 #define HX711_DOUT      PORTDbits.RD0
@@ -101,14 +98,14 @@ float hx711_get_units(uint8_t times);
 void eeprom_write_long(uint16_t addr, long val);
 long eeprom_read_long(uint16_t addr);
 
-/* Servo (temporización) */
+/* Servo (temporizaciÃ³n) */
 void servo_write_blocking(uint8_t angle); // genera pulses ~1s para mover/asegurar posicion
 
-/* Calibración y pesaje */
+/* CalibraciÃ³n y pesaje */
 void Calibrar(void);
 void Pesa(void);
 
-/* Interrupción RB change */
+/* InterrupciÃ³n RB change */
 volatile uint8_t prevRB; // para detectar flancos en RB4..RB7
 void __interrupt() isr(void);
 
@@ -119,7 +116,7 @@ void pwm_set_duty_percent(uint8_t duty);
 /* UTIL */
 static inline void delay_us(unsigned int us) { while(us--) __delay_us(1); }
 
-/* ----------------- IMPLEMENTACIÓN ----------------- */
+/* ----------------- IMPLEMENTACIÃ“N ----------------- */
 
 void setup_hw(void) {
     /* Pines */
@@ -369,7 +366,7 @@ void servo_write_blocking(uint8_t angle) {
     }
 }
 
-/* ---------- Calibrar & Pesa (manteniendo lógica) ---------- */
+/* ---------- Calibrar & Pesa (manteniendo lÃ³gica) ---------- */
 void Calibrar(void) {
     uint8_t conf = 1;
     long adc_lecture;
@@ -442,7 +439,7 @@ void pwm_set_duty_percent(uint8_t duty) {
     CCP1CONbits.DC1B = pwm_val & 0x03;
 }
 
-/* ---------- INTERRUPCIÓN RB change (arranque/paro) ---------- */
+/* ---------- INTERRUPCIÃ“N RB change (arranque/paro) ---------- */
 void __interrupt() isr(void) {
     if (INTCONbits.RBIF) {
         uint8_t cur = PORTB & 0xF0;
@@ -549,3 +546,4 @@ int main(void) {
     }
     return 0;
 }
+
