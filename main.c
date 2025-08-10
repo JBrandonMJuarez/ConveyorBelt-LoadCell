@@ -23,13 +23,10 @@
 #pragma config MCLRE = ON
 
 // ---------- Definiciones hardware ----------
-/* I2C (PCF8574) usando MSSP hardware (SDA=RC4, SCL=RC3 en PIC18F4550 hardware) */
+/* I2C (PCF8574) */
 #define I2C_HW               1
 #define PCF8574_ADDR         0x40  // 7-bit address (común para muchos módulos LCD)
 
-// NOTA: en el código original las macros I2C_SDA_PIN etc estaban apuntando a RB0/RB1.
-// Al usar MSSP hardware, el hardware usa RC3/RC4. No modifiqué el resto del programa
-// salvo las funciones i2c_* — el resto del código mantiene sus macros originales.
 
 /* HX711 pins */
 #define HX711_DOUT      PORTDbits.RD0
@@ -546,4 +543,5 @@ int main(void) {
     }
     return 0;
 }
+
 
